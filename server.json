@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.pipeworx-io/seo-keywords-ads",
+  "title": "Seo Keywords Ads",
+  "description": "SEO Keywords (Google Ads volume) MCP — exact Google Ads search volume via",
+  "version": "0.1.0",
+  "websiteUrl": "https://pipeworx.io/packs/seo-keywords-ads",
+  "repository": {
+    "url": "https://github.com/pipeworx-io/mcp-seo-keywords-ads",
+    "source": "github"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://gateway.pipeworx.io/seo-keywords-ads/mcp"
+    }
+  ]
+}
