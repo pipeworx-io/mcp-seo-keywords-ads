@@ -77,3 +77,7 @@ The gateway picks the right tool and fills the arguments automatically.
 ## License
 
 MIT
+
+## No MCP client? Call it over HTTP
+
+Our seo-keywords-ads key is reserved for paid accounts, so an anonymous call to `POST https://gateway.pipeworx.io/v1/tools/seo_keyword_google_ads_volume` needs your own key passed as `_apiKey` alongside the arguments. Inspect any tool: `GET https://gateway.pipeworx.io/v1/tools/seo_keyword_google_ads_volume`. Find one: `POST https://gateway.pipeworx.io/v1/tools/search_packs` with `{"query":"..."}`.
