@@ -1,11 +1,19 @@
 interface McpToolDefinition {
   name: string;
   description: string;
+  /** Human-facing one-liner (fleet #1967). Optional; consumers fall back to
+   *  description. Kept in step with shared/src/types.ts — scripts/lib/
+   *  check-inlined-types.mjs reports drift at publish time. */
+  summary?: string;
   inputSchema: {
     type: 'object';
     properties: Record<string, unknown>;
     required?: string[];
+    anyOf?: Array<{ required: string[] }>;
+    oneOf?: Array<{ required: string[] }>;
+    allOf?: Array<{ required: string[] }>;
   };
+  outputSchema?: Record<string, unknown>;
 }
 
 interface McpToolExport {
@@ -35,6 +43,9 @@ interface McpToolExport {
 
 
 const BASE_URL = 'https://api.dataforseo.com';
+// Bounds DataForSEO's variable live Google-Ads latency (measured ~45s). Fails
+// with an actionable message before the caller's timeout rather than hanging.
+const DFS_LIVE_TIMEOUT_MS = 55000;
 
 const tools: McpToolExport['tools'] = [
   {
@@ -73,11 +84,30 @@ async function dfsPost(path: string, body: unknown, apiKey: string, tool: string
       `${tool} requires a DataForSEO API key. Pass _apiKey = base64("login:password") from your DataForSEO account (sign up at dataforseo.com). This is a paid data source — bring your own key, or add credits at https://pipeworx.io/account.`,
     );
   }
-  const res = await fetch(`${BASE_URL}${path}`, {
-    method: 'POST',
-    headers: { Authorization: `Basic ${apiKey}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
+  // DataForSEO's live Google-Ads search-volume endpoint queries Google Ads in
+  // real time (~45s, variable). Bound it so a slow call returns an actionable
+  // error instead of hanging past the caller's timeout — and point to the fast
+  // Labs alternative (seo_keyword_overview) for a search-volume estimate.
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), DFS_LIVE_TIMEOUT_MS);
+  let res: Response;
+  try {
+    res = await fetch(`${BASE_URL}${path}`, {
+      method: 'POST',
+      headers: { Authorization: `Basic ${apiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+  } catch (e) {
+    if ((e as Error)?.name === 'AbortError') {
+      throw new Error(
+        `upstream_throttled: DataForSEO ${tool}'s live Google-Ads endpoint didn't respond within ${DFS_LIVE_TIMEOUT_MS / 1000}s (it queries Google Ads in real time). Retry shortly, or use seo_keyword_overview for a fast search-volume estimate.`,
+      );
+    }
+    throw e;
+  } finally {
+    clearTimeout(timer);
+  }
   if (res.status === 401 || res.status === 403) {
     throw new Error(
       `DataForSEO auth failed (HTTP ${res.status}). Check _apiKey is base64("login:password") and your account is funded/verified (data endpoints return 40104 until the account is funded). Re-encode credentials and retry.`,
@@ -151,4 +181,9 @@ async function callTool(name: string, args: Record<string, unknown>): Promise<un
 // Wave 1 (BYO-only): nominal access meter; user's own key bears DataForSEO COGS.
 // Wave 2: measured `cost` CostModel — ~7x seo-keywords, price to its own worst
 // case (10 keywords) + realCogs gate. Kept in its own pack for that reason.
-export default { tools, callTool, meter: { credits: 1 } } satisfies McpToolExport;
+// Wave-2 CostModel (§4). ⚠️ Google Ads search_volume is ~7× pricier and may
+// scale PER-KEYWORD ($0.075 for 1 kw). Conservative floor at the 10-kw cap ≈
+// 1125 credits, but MUST MEASURE at 10 keywords before PLATFORM_DATAFORSEO_AUTH
+// goes live — if it scales per-keyword the real base is much higher (≈11250).
+// Priced to the cap = never underwater. Only charged when our key backs the call.
+export default { tools, callTool, cost: { base: 1350 }, provider: 'dataforseo' } satisfies McpToolExport;

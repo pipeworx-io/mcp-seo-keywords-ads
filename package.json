@@ -1,20 +1,32 @@
 {
   "name": "@pipeworx/mcp-seo-keywords-ads",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "SEO Keywords (Google Ads volume) MCP — exact Google Ads search volume via",
   "type": "module",
   "main": "src/index.ts",
   "types": "src/index.ts",
+  "bin": {
+    "mcp-seo-keywords-ads": "bin/cli.js"
+  },
   "keywords": ["mcp", "mcp-server", "model-context-protocol", "pipeworx", "seo-keywords-ads"],
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pipeworx-io/mcp-seo-keywords-ads"
+    "url": "git+https://github.com/pipeworx-io/mcp-seo-keywords-ads.git"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "tsx": "^4.19.0"
+  },
   "devDependencies": {
-    "typescript": "^5.7.0"
+    "typescript": "^5.9.3",
+    "@cloudflare/workers-types": "^4.20260405.1"
+  },
+  "pipeworx": {
+    "sourceHash": "v1-05d4132ace1bb6805dcbc71662757c76a59e4117e9eec61053f1c0ad5ac14dee",
+    "sourceCommit": "00c836ddeaecbdd581dcfb0fb1842efea104006e"
   }
 }
