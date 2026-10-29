@@ -1,0 +1,34 @@
+[
+  {
+    "name": "seo_keyword_google_ads_volume",
+    "description": "Exact Google Ads search volume for `<keyword>` — Google's own monthly search-volume numbers (plus competition and CPC) from the Ads API, for up to 10 keywords. Use when you specifically need Google Ads figures; for general SEO volume + keyword difficulty, prefer seo_keyword_overview (cheaper). Example: seo_keyword_google_ads_volume({ keywords: [\"running shoes\"], location_code: 2840, _apiKey: \"your-base64-key\" })",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Keywords to look up (max 10), e.g. [\"running shoes\", \"trail shoes\"]"
+        },
+        "location_code": {
+          "type": "integer",
+          "description": "DataForSEO location code (default 2840 = United States)"
+        },
+        "language_code": {
+          "type": "string",
+          "description": "Two-letter language code (default \"en\")"
+        },
+        "_apiKey": {
+          "type": "string",
+          "description": "DataForSEO API key = base64(\"login:password\") from your dataforseo.com account"
+        }
+      },
+      "required": [
+        "keywords",
+        "_apiKey"
+      ]
+    }
+  }
+]
