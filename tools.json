@@ -1,7 +1,7 @@
 [
   {
     "name": "seo_keyword_google_ads_volume",
-    "description": "Exact Google Ads search volume for `<keyword>` — Google's own monthly search-volume numbers (plus competition and CPC) from the Ads API, for up to 10 keywords. Use when you specifically need Google Ads figures; for general SEO volume + keyword difficulty, prefer seo_keyword_overview (cheaper). Example: seo_keyword_google_ads_volume({ keywords: [\"running shoes\"], location_code: 2840, _apiKey: \"your-base64-key\" })",
+    "description": "Exact Google Ads search volume for `<keyword>` — Google's own monthly search-volume numbers (plus competition and CPC) from the Ads API, for up to 10 keywords. Use when you specifically need Google Ads figures; for general SEO volume + keyword difficulty, prefer seo_keyword_overview (cheaper). Example: seo_keyword_google_ads_volume({ keywords: [\"running shoes\"], location_code: 2840 })",
     "inputSchema": {
       "type": "object",
       "properties": {

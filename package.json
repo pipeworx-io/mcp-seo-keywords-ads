@@ -1,6 +1,6 @@
 {
   "name": "@pipeworx/mcp-seo-keywords-ads",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "SEO Keywords (Google Ads volume) MCP — exact Google Ads search volume via DataForSEO (dataforseo.com).",
   "type": "module",
   "main": "lib/index.js",
@@ -27,7 +27,7 @@
     "mode": "gateway",
     "slug": "seo-keywords-ads",
     "gatewaySlug": "seo-keywords-ads",
-    "sourceHash": "v1-7e70fedbc2370d375ff509ca187bbae9ce641c863a23ea54293be69cca5372ea",
-    "sourceCommit": "f47d581679e1e887373df51ba623f891fbe4c464"
+    "sourceHash": "v1-eeb1526dbad8d8302b5bc0e5522acf7e595aebde57d9ffeaf67386c3c49bdbd7",
+    "sourceCommit": "8fc802aa5e23be625ce08d97178f5676c7bc93f3"
   }
 }
